@@ -303,10 +303,11 @@ class jeeb extends PaymentModule {
         $testmode = "";
       }
 
-      $btc = $eur = $irr = $usd = "";
+      $btc = $eur = $irr = $usd = $toman = "";
       Configuration::get('jeeb_BASECOIN') == "btc" ? $btc = "selected" : $btc = "" ;
       Configuration::get('jeeb_BASECOIN') == "eur" ? $eur = "selected" : $eur = "" ;
       Configuration::get('jeeb_BASECOIN') == "irr" ? $irr = "selected" : $irr = "" ;
+      Configuration::get('jeeb_BASECOIN') == "toman" ? $toman = "selected" : $toman = "" ;
       Configuration::get('jeeb_BASECOIN') == "usd" ? $usd = "selected" : $usd = "" ;
 
       $target_btc = $target_eth = $target_xrp = $target_xmr = $target_bch = $target_ltc = $target_test_btc = "";
@@ -335,7 +336,7 @@ class jeeb extends PaymentModule {
                </div>
                <div style="clear:both;margin-bottom:30px;overflow:hidden;">
                <h3 style="clear:both;">'.$this->l('Basecoin').'</h3>
-               <label style="width:auto;"><select name="basecoin_jeeb"><option value="btc" '.$btc.'>BTC</option><option value="eur" '.$eur.'>EUR</option><option value="irr" '.$irr.'>IRR</option><option value="usd" '.$usd.'>USD</option></select> '.$this->l('Select the base-currency of your shop').'</label>
+               <label style="width:auto;"><select name="basecoin_jeeb"><option value="btc" '.$btc.'>BTC</option><option value="eur" '.$eur.'>EUR</option><option value="irr" '.$irr.'>IRR</option><option value="toman" '.$toman.'>TOMAN</option><option value="usd" '.$usd.'>USD</option></select> '.$this->l('Select the base-currency of your shop').'</label>
                </div>
                <div style="clear:both;margin-bottom:30px;overflow:hidden;">
                <h3 style="clear:both;">'.$this->l('Targetcoin').'</h3>
@@ -418,6 +419,11 @@ class jeeb extends PaymentModule {
 
       error_log("Base Uri : ".$baseUri." Signature : ".$signature." CallbackUri : ".$callBack." NotificationUri : ".$notification);
       error_log("Cost = ". $total);
+      
+      if($baseCur=='toman'){
+        $baseCur='irr';
+        $order_total *= 10;
+      }
 
 
       $amount = convertIrrToBtc($baseUri, $order_total, $signature, $baseCur);
